@@ -23,9 +23,16 @@ class ScheduleGUI(QWidget):
         self.backupIntervalLineEdit.textChanged.connect(self.BackupIntervalChanged)
         self.masterLayout.addWidget(self.backupIntervalLineEdit)
 
+        self.ctrlLayout = QHBoxLayout()
+        self.masterLayout.addLayout(self.ctrlLayout)
+
         self.startBackupRoutineBtn = QPushButton("Start Backup Routine")
         self.startBackupRoutineBtn.clicked.connect(self.scheduler.StartBackupRoutine)
-        self.masterLayout.addWidget(self.startBackupRoutineBtn)
+        self.ctrlLayout.addWidget(self.startBackupRoutineBtn)
+
+        self.stopRoutineBtn = QPushButton("Stop")
+        self.stopRoutineBtn.clicked.connect(self.scheduler.StopBackupRoutine)
+        self.ctrlLayout.addWidget(self.stopRoutineBtn)
 
     def BackupIntervalChanged(self):
         intervalStr = self.backupIntervalLineEdit.text()

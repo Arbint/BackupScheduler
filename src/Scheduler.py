@@ -19,3 +19,6 @@ class Scheduler:
 
     def StartBackupRoutine(self):
         print(f"starting backup {self.folderToBackup} to {self.backupDestination}, with interval: {self.backupIntervalMinutes} minutes")
+
+    def StopBackupRoutine(self):
+        print(f"Stopping")
