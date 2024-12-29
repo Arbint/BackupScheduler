@@ -48,10 +48,12 @@ class BackupScheduler:
         backupTimeStr = backupTime.strftime("%Y-%m-%d_%H-%M-%S")
 
         origFolderName = os.path.basename(self.folderToBackup)
-
         backupFolderName = f"{origFolderName}_{backupTimeStr}"
 
-        logMsg = f"{backupTimeStr}: copying {self.folderToBackup} to {self.backupDestination}/{backupFolderName}" 
+        backupDestinationPath = os.path.join(self.backupDestination, backupFolderName)
+        shutil.copytree(self.folderToBackup, backupDestinationPath)
+
+        logMsg = f"{backupTimeStr}: copying {self.folderToBackup} to {backupDestinationPath}" 
         print(logMsg)
         Logger.AddLogEntry(logMsg)
 

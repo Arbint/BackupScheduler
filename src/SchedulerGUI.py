@@ -10,25 +10,21 @@ class ScheduleGUI(QWidget):
         self.scheduler.SetLogCallback(self.AddLog)
 
         self.setWindowTitle("Backup Scheduler")
-        self.masterLayout = QHBoxLayout()
+        self.masterLayout = QVBoxLayout()
         self.setLayout(self.masterLayout)
 
-        self.configureLayout = QVBoxLayout()
-        self.masterLayout.addLayout(self.configureLayout)
+        self.BuildFolderQuerySection(self.masterLayout, "Folder to Backup: ", self.scheduler.SetFolderToBackup)
+        self.BuildFolderQuerySection(self.masterLayout, "Backup Destionation: ", self.scheduler.SetBackupDestination)
 
-        self.BuildFolderQuerySection(self.configureLayout, "Folder to Backup: ", self.scheduler.SetFolderToBackup)
-        self.BuildFolderQuerySection(self.configureLayout, "Backup Destionation: ", self.scheduler.SetBackupDestination)
+        self.BuildTimeConfigSection(self.masterLayout)
+        self.BuildCtrlSection(self.masterLayout)
 
-        backupIntervalLabel = QLabel("Backup Interval Minutes")
-        self.configureLayout.addWidget(backupIntervalLabel)
-        
-        self.backupIntervalLineEdit = QLineEdit()
-        self.backupIntervalLineEdit.setValidator(QIntValidator(bottom=1))
-        self.backupIntervalLineEdit.textChanged.connect(self.BackupIntervalChanged)
-        self.configureLayout.addWidget(self.backupIntervalLineEdit)
+        self.BuildLogList(self.masterLayout)
 
+
+    def BuildCtrlSection(self, parent):
         self.ctrlLayout = QHBoxLayout()
-        self.configureLayout.addLayout(self.ctrlLayout)
+        parent.addLayout(self.ctrlLayout)
 
         self.startBackupRoutineBtn = QPushButton("Start Backup Routine")
         self.startBackupRoutineBtn.clicked.connect(self.scheduler.StartBackupRoutine)
@@ -38,10 +34,16 @@ class ScheduleGUI(QWidget):
         self.stopRoutineBtn.clicked.connect(self.scheduler.StopBackupRoutine)
         self.ctrlLayout.addWidget(self.stopRoutineBtn)
 
-        self.BuildLogList(self.configureLayout)
 
-    def AddLog(self, logEntry):
-        self.logList.addItem(logEntry)
+    def BuildTimeConfigSection(self, parent):
+        backupIntervalLabel = QLabel("Backup Interval Minutes")
+        parent.addWidget(backupIntervalLabel)
+        
+        self.backupIntervalLineEdit = QLineEdit()
+        self.backupIntervalLineEdit.setValidator(QIntValidator(bottom=1))
+        self.backupIntervalLineEdit.textChanged.connect(self.BackupIntervalChanged)
+        self.masterLayout.addWidget(self.backupIntervalLineEdit)
+
 
     def BuildLogList(self, parentLayout):
         sectionLayout = QVBoxLayout()
@@ -58,6 +60,7 @@ class ScheduleGUI(QWidget):
         intervalStr = self.backupIntervalLineEdit.text()
         self.scheduler.SetBackupIntervalMintues(int(intervalStr))
 
+
     def BuildFolderQuerySection(self, parentLayout, label: str, ConfigFunc):
         sectionLayout = QHBoxLayout()
         parentLayout.addLayout(sectionLayout)
@@ -73,10 +76,15 @@ class ScheduleGUI(QWidget):
         selectFolderBtn.clicked.connect(lambda : self.SelectFolder(folderLineEdit, ConfigFunc))
         sectionLayout.addWidget(selectFolderBtn)
 
+
     def SelectFolder(self, folderLineEdit: QLineEdit, DirConfigFunc):
         dir = QFileDialog().getExistingDirectory()
         DirConfigFunc(dir)
         folderLineEdit.setText(dir)
+
+
+    def AddLog(self, logEntry):
+        self.logList.addItem(logEntry)
 
 if __name__ == "__main__":
     app = QApplication()
