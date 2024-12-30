@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFileDialog, QPushButton, QLabel, QGridLayout, QApplication, QLineEdit, QListWidget, QListWidgetItem
 from PySide6.QtGui import QIntValidator
 from Scheduler import BackupScheduler 
+from DurationView import DurationView
 
 class ScheduleGUI(QWidget):
     def __init__(self):
@@ -21,7 +22,6 @@ class ScheduleGUI(QWidget):
 
         self.BuildLogList(self.masterLayout)
 
-
     def BuildCtrlSection(self, parent):
         self.ctrlLayout = QHBoxLayout()
         parent.addLayout(self.ctrlLayout)
@@ -39,10 +39,11 @@ class ScheduleGUI(QWidget):
         backupIntervalLabel = QLabel("Backup Interval Minutes")
         parent.addWidget(backupIntervalLabel)
         
-        self.backupIntervalLineEdit = QLineEdit()
-        self.backupIntervalLineEdit.setValidator(QIntValidator(bottom=1))
-        self.backupIntervalLineEdit.textChanged.connect(self.BackupIntervalChanged)
-        self.masterLayout.addWidget(self.backupIntervalLineEdit)
+        durationView = DurationView()
+        durationView.hoursChanged.connect(self.scheduler.duration.SetHours)
+        durationView.daysChanged.connect(self.scheduler.duration.SetDays)
+        durationView.minutesChanged.connect(self.scheduler.duration.SetMinutes)
+        parent.addWidget(durationView)
 
 
     def BuildLogList(self, parentLayout):
@@ -54,11 +55,6 @@ class ScheduleGUI(QWidget):
 
         self.logList = QListWidget()
         sectionLayout.addWidget(self.logList)
-
-
-    def BackupIntervalChanged(self):
-        intervalStr = self.backupIntervalLineEdit.text()
-        self.scheduler.SetBackupIntervalMintues(int(intervalStr))
 
 
     def BuildFolderQuerySection(self, parentLayout, label: str, ConfigFunc):
