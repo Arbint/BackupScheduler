@@ -20,7 +20,10 @@ class BackupScheduler:
         self.schedulerThread = threading.Thread(target = self.UpdateBackupThread)
         self.schedulerThread.daemon = True
         self.schedulerThread.start()
+        self.filpFlopState = True
 
+    def SetFlipFlopState(self, newFlipFlopState):
+        self.filpFlopState = newFlipFlopState
 
     def UpdateBackupThread(self):
         while True:

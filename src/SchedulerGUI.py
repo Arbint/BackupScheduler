@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFileDialog, QPushButton, QLabel, QGridLayout, QApplication, QLineEdit, QListWidget, QListWidgetItem
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFileDialog, QPushButton, QLabel, QGridLayout, QApplication, QLineEdit, QListWidget, QListWidgetItem, QCheckBox
 from PySide6.QtGui import QIntValidator
 from Scheduler import BackupScheduler 
 from DurationView import DurationView
@@ -23,16 +23,27 @@ class ScheduleGUI(QWidget):
         self.BuildLogList(self.masterLayout)
 
     def BuildCtrlSection(self, parent):
-        self.ctrlLayout = QHBoxLayout()
+        self.ctrlLayout = QVBoxLayout()
         parent.addLayout(self.ctrlLayout)
 
+        self.flipFlopCheckbox = QCheckBox("Flip Flop")
+        self.flipFlopCheckbox.setChecked(self.scheduler.filpFlopState)
+        self.flipFlopCheckbox.checkStateChanged.connect(self.FlipFlopStateUpdated)
+        self.ctrlLayout.addWidget(self.flipFlopCheckbox)
+        
+        self.buttonLayout = QHBoxLayout()
+        self.ctrlLayout.addLayout(self.buttonLayout)
         self.startBackupRoutineBtn = QPushButton("Start Backup Routine")
         self.startBackupRoutineBtn.clicked.connect(self.scheduler.StartBackupRoutine)
-        self.ctrlLayout.addWidget(self.startBackupRoutineBtn)
+        self.buttonLayout.addWidget(self.startBackupRoutineBtn)
 
         self.stopRoutineBtn = QPushButton("Stop")
         self.stopRoutineBtn.clicked.connect(self.scheduler.StopBackupRoutine)
-        self.ctrlLayout.addWidget(self.stopRoutineBtn)
+        self.buttonLayout.addWidget(self.stopRoutineBtn)
+
+    def FlipFlopStateUpdated(self):
+        checked = self.flipFlopCheckbox.isChecked()
+        self.scheduler.SetFlipFlopState(checked)
 
 
     def BuildTimeConfigSection(self, parent):
