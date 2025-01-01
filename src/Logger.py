@@ -18,8 +18,23 @@ class Logger:
     def GetLogFilePath():
         return Logger.GetLogDir() / "log.txt"
 
+    @staticmethod
+    def GetErrorLogFilePath():
+        return Logger.GetLogDir() / "Error.txt"
+
     @staticmethod 
-    def AddLogEntry(entry: str):
+    def AddLogEntry(entry: str, printToConsole : bool = True):
+        if printToConsole:
+            print(entry)
+
         with open(Logger.GetLogFilePath(), 'a') as logFile:
             logFile.write(f"{entry}\n")
 
+
+    @staticmethod
+    def AddErrorLog(entry: str, printToConsole: bool = True):
+        if printToConsole:
+            print(entry)
+
+        with open(Logger.GetErrorLogFilePath(), 'a') as logFile:
+            logFile.write(f"{entry}\n")

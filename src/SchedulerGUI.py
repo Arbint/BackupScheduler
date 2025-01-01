@@ -1,7 +1,23 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFileDialog, QPushButton, QLabel, QGridLayout, QApplication, QLineEdit, QListWidget, QListWidgetItem, QCheckBox
+from PySide6.QtWidgets import (QWidget,
+                               QVBoxLayout,
+                               QHBoxLayout,
+                               QFileDialog,
+                               QPushButton,
+                               QLabel,
+                               QGridLayout,
+                               QApplication, 
+                               QLineEdit,
+                               QListWidget,
+                               QListWidgetItem,
+                               QCheckBox,
+                               QSlider
+                               )
+
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QIntValidator
 from Scheduler import BackupScheduler 
 from DurationView import DurationView
+from Logger import Logger
 
 class ScheduleGUI(QWidget):
     def __init__(self):
@@ -26,34 +42,50 @@ class ScheduleGUI(QWidget):
         self.ctrlLayout = QVBoxLayout()
         parent.addLayout(self.ctrlLayout)
 
-        self.flipFlopCheckbox = QCheckBox("Flip Flop")
-        self.flipFlopCheckbox.setChecked(self.scheduler.filpFlopState)
-        self.flipFlopCheckbox.checkStateChanged.connect(self.FlipFlopStateUpdated)
-        self.ctrlLayout.addWidget(self.flipFlopCheckbox)
+        maxCountSliderLayout = QHBoxLayout()
+        self.ctrlLayout.addLayout(maxCountSliderLayout)
+
+        self.backupMaxCountLabel = QLabel()
+        self.SetMaxBackupCountLabel(self.scheduler.maxBackupCount)
+        self.backupMaxCountSlider = QSlider(Qt.Horizontal, self)
+        self.backupMaxCountSlider.setMinimum(1)
+        self.backupMaxCountSlider.setMaximum(20)
+        self.backupMaxCountSlider.setValue(self.scheduler.maxBackupCount)
+        self.backupMaxCountSlider.setTickPosition(QSlider.TicksBelow)
+        self.backupMaxCountSlider.setTickInterval(1)
+        self.backupMaxCountSlider.valueChanged.connect(self.BackupMaxCountSliderUpdated)
+
+        maxCountSliderLayout.addWidget(self.backupMaxCountLabel)
+        maxCountSliderLayout.addWidget(self.backupMaxCountSlider)
         
-        self.buttonLayout = QHBoxLayout()
-        self.ctrlLayout.addLayout(self.buttonLayout)
+        self.ctrlBtnLayout = QHBoxLayout()
+        self.ctrlLayout.addLayout(self.ctrlBtnLayout)
         self.startBackupRoutineBtn = QPushButton("Start Backup Routine")
         self.startBackupRoutineBtn.clicked.connect(self.scheduler.StartBackupRoutine)
-        self.buttonLayout.addWidget(self.startBackupRoutineBtn)
+        self.ctrlBtnLayout.addWidget(self.startBackupRoutineBtn)
 
         self.stopRoutineBtn = QPushButton("Stop")
         self.stopRoutineBtn.clicked.connect(self.scheduler.StopBackupRoutine)
-        self.buttonLayout.addWidget(self.stopRoutineBtn)
+        self.ctrlBtnLayout.addWidget(self.stopRoutineBtn)
 
-    def FlipFlopStateUpdated(self):
-        checked = self.flipFlopCheckbox.isChecked()
-        self.scheduler.SetFlipFlopState(checked)
+    def BackupMaxCountSliderUpdated(self):
+        newCount = self.backupMaxCountSlider.value()
+        self.scheduler.SetMaxbackupCount(newCount)
+        self.SetMaxBackupCountLabel(newCount)
 
+    def SetMaxBackupCountLabel(self, newCount):
+        self.backupMaxCountLabel.setText(f"Backup Max Count: {newCount}      ")
 
     def BuildTimeConfigSection(self, parent):
-        backupIntervalLabel = QLabel("Backup Interval Minutes")
+        backupIntervalLabel = QLabel("Backup Interval")
         parent.addWidget(backupIntervalLabel)
         
         durationView = DurationView()
         durationView.hoursChanged.connect(self.scheduler.duration.SetHours)
         durationView.daysChanged.connect(self.scheduler.duration.SetDays)
         durationView.minutesChanged.connect(self.scheduler.duration.SetMinutes)
+        durationView.secondChanged.connect(self.scheduler.duration.SetSeconds)
+
         parent.addWidget(durationView)
 
 
@@ -93,10 +125,15 @@ class ScheduleGUI(QWidget):
     def AddLog(self, logEntry):
         self.logList.addItem(logEntry)
 
+
 if __name__ == "__main__":
-    app = QApplication()
+    try:
+        app = QApplication()
 
-    gui = ScheduleGUI()
-    gui.show()
+        gui = ScheduleGUI()
+        gui.show()
+        app.exec()
 
-    app.exec()
+    except Exception as e:
+        Logger.AddErrorLog(e)
+

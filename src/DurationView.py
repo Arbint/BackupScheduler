@@ -6,6 +6,7 @@ class DurationView(QWidget):
     daysChanged = Signal(int)
     hoursChanged = Signal(int)
     minutesChanged = Signal(int)
+    secondChanged = Signal(int)
 
     def __init__(self):
         super().__init__()
@@ -15,6 +16,7 @@ class DurationView(QWidget):
         self.AddNumEntry(self.masterLayout, "Days", self.daysChanged)
         self.AddNumEntry(self.masterLayout, "Hours", self.hoursChanged)
         self.AddNumEntry(self.masterLayout, "Minutes", self.minutesChanged)
+        self.AddNumEntry(self.masterLayout, "second", self.secondChanged)
 
     def AddNumEntry(self, parent: QLayout, label: str, changeSignal):
         label = QLabel(label)

@@ -1,8 +1,9 @@
 class DurationModel:
-    def __init__(self, days: int = 0, hours:int = 0, minutes: int = 0):
+    def __init__(self, days: int = 0, hours:int = 0, minutes: int = 0, seconds: int = 0):
         self.days = days
         self.hours = hours
         self.minutes = minutes
+        self.seconds = seconds
     
     def SetHours(self, hours):
         self.hours = hours
@@ -13,8 +14,10 @@ class DurationModel:
     def SetMinutes(self, minutes):
         self.minutes = minutes
 
+    def SetSeconds(self, seconds):
+        self.seconds = seconds
     def __str__(self):
-        return f"{self.days} days, {self.hours} hours, and {self.minutes} minutes"
+        return f"{self.days} days, {self.hours} hours, {self.minutes} minutes and {self.seconds} seconds"
         
-    def ToMinutes(self):
-        return self.days * 24 * 60 + self.hours * 60 + self.minutes
+    def ToSecond(self):
+        return self.days * 24 * 3600  + self.hours * 3600 + self.minutes * 60 + self.seconds

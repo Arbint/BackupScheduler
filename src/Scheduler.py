@@ -6,8 +6,10 @@ import time
 from datetime import datetime
 import schedule
 from Duration import DurationModel
-
 from Logger import Logger
+from pathUtility import GetRecordFilePath
+import pickle
+
 
 class BackupScheduler:
     def __init__(self):
@@ -20,10 +22,10 @@ class BackupScheduler:
         self.schedulerThread = threading.Thread(target = self.UpdateBackupThread)
         self.schedulerThread.daemon = True
         self.schedulerThread.start()
-        self.filpFlopState = True
+        self.maxBackupCount = 2 
 
-    def SetFlipFlopState(self, newFlipFlopState):
-        self.filpFlopState = newFlipFlopState
+    def SetMaxbackupCount(self, maxBackupCount):
+        self.maxBackupCount = maxBackupCount
 
     def UpdateBackupThread(self):
         while True:
@@ -39,32 +41,121 @@ class BackupScheduler:
         self.backupDestination = newBackupDestination
 
     def StartBackupRoutine(self):
-        print(f"starting backup {self.folderToBackup} to {self.backupDestination}, with interval: {self.duration}")
+        self.CheckInputValidity()
+        self.AddLog(f"starting backup {self.folderToBackup} to {self.backupDestination}, with interval: {self.duration}", True)
 
         self.shouldUpdateScheudler = True
         schedule.clear()
-        schedule.every(self.duration.ToMinutes()).minutes.do(self.DoBackup)
+        schedule.every(self.duration.ToSecond()).seconds.do(self.DoBackup)
         
+    def CheckInputValidity(self):
+        backupIntervalSeconds = self.duration.ToSecond()
+        if backupIntervalSeconds <= 0:
+            errorMsg = f"backup interval {backupIntervalSeconds} is invalid"
+            self.AddLog(errorMsg, True)
+            raise ValueError(errorMsg)
+
+        if not os.path.exists(self.backupDestination):
+            errorMsg = f"backup destination: {self.backupDestination} is invalid"
+            self.AddLog(errorMsg, True)
+            raise ValueError(errorMsg)
+
+        if not os.path.exists(self.folderToBackup):
+            errorMsg = f"backup folder: {self.folderToBackup} is invalid"
+            self.AddLog(errorMsg, True)
+            raise ValueError(errorMsg)
+
     def DoBackup(self):  
         backupTime = datetime.now()
         backupTimeStr = backupTime.strftime("%Y-%m-%d_%H-%M-%S")
 
         origFolderName = os.path.basename(self.folderToBackup)
+        self.RemoveEarliestIfMaxCountReached(origFolderName)
+
         backupFolderName = f"{origFolderName}_{backupTimeStr}"
 
         backupDestinationPath = os.path.join(self.backupDestination, backupFolderName)
         shutil.copytree(self.folderToBackup, backupDestinationPath)
 
-        logMsg = f"{backupTimeStr}: copying {self.folderToBackup} to {backupDestinationPath}" 
-        print(logMsg)
-        Logger.AddLogEntry(logMsg)
+        self.WriteBackupRecord(backupTime, backupDestinationPath)
+
+        logMsg = f"{backupTimeStr}: {self.folderToBackup} backed up to {backupDestinationPath}" 
+        self.AddLog(logMsg, True)
+    
+    def AddLog(self, logMsg, logToConsole = False):
+        Logger.AddLogEntry(logMsg, logToConsole)
 
         if self.logCallbackFunc:
             self.logCallbackFunc(logMsg)
+
+    
+    def RemoveEarliestIfMaxCountReached(self, folderToBackup):
+        backedUpFolders = self.FindBackupsForFolderInDestination(folderToBackup)
+        if len(backedUpFolders) <= 0:
+            return
+
+        if len(backedUpFolders) < self.maxBackupCount:
+            return
+
+        earliest = backedUpFolders[0]
+        earliestTime = self.GetBackupTimeForFolder(earliest)
+        for i in range(1, len(backedUpFolders)):
+            folderName = backedUpFolders[i] 
+            folderCreationTime = self.GetBackupTimeForFolder(folderName)    
+            if folderCreationTime < earliestTime:
+                earliestTime = folderCreationTime
+                earliest = folderName
+
+        shutil.rmtree(os.path.join(self.backupDestination, earliest))
+
+
+    def GetBackupTimeForFolder(self, folder):
+        record = self.GetRecordDictionary()
+        if folder in record:
+            return record[folder]
+        return self.GetFolderOSRecordedCreationTime(folder)
+
+
+    def GetFolderOSRecordedCreationTime(self, folderName):
+        folderPath = os.path.join(self.backupDestination, folderName)
+        try:
+            creationTime = os.path.getctime(folderPath)
+            creationTime = datetime.fromtimestamp(creationTime)
+            return creationTime
+        except Exception as e:
+            self.AddLog(f"Error retrieving creation time: {e}", True)
+            return None
+
 
     def SetLogCallback(self, callbackFunc):
         self.logCallbackFunc = callbackFunc
 
     def StopBackupRoutine(self):
-        print(f"Stopping")
+        self.AddLog(f"Stopping", True)
         self.shouldUpdateScheudler = False
+
+
+    def WriteBackupRecord(self, backupTime, folderName):
+        record = self.GetRecordDictionary()
+        record[folderName] = backupTime
+
+        with open(GetRecordFilePath(), 'wb') as dataFile:
+            pickle.dump(record, dataFile)
+
+    def GetRecordDictionary(self):
+        dataFilePath = GetRecordFilePath()
+        try:
+            with open(dataFilePath, 'rb') as dataFile:
+                return pickle.load(dataFile)
+
+        except FileNotFoundError:
+            self.AddLog("can't find the record file, create a new empty dictionary", True)
+            return {}
+
+    def FindBackupsForFolderInDestination(self, folderName):
+        outFolders = []
+        for folder in os.listdir(self.backupDestination):
+            if folderName in folder:
+                outFolders.append(folder)
+
+        return outFolders
