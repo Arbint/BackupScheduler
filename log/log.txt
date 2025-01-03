@@ -43,3 +43,41 @@ starting backup E:/Dev/backupTest/folderToBackup to E:/Dev/backupTest/backupDest
 2024-12-31_19-14-02: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2024-12-31_19-14-02
 2024-12-31_19-14-03: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2024-12-31_19-14-03
 2024-12-31_19-14-04: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2024-12-31_19-14-04
+starting backup /Users/jingtianli/dev/backupTest to /Users/jingtianli/dev/backupDestination, with interval: 0 days, 0 hours, 0 minutes and 1 seconds
+2024-12-31_23-07-26: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-26
+2024-12-31_23-07-27: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-27
+2024-12-31_23-07-28: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-28
+2024-12-31_23-07-29: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-29
+2024-12-31_23-07-30: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-30
+2024-12-31_23-07-31: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-31
+2024-12-31_23-07-32: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-32
+2024-12-31_23-07-33: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-33
+2024-12-31_23-07-34: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-34
+2024-12-31_23-07-35: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-35
+2024-12-31_23-07-36: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-36
+2024-12-31_23-07-37: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-37
+2024-12-31_23-07-38: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-38
+2024-12-31_23-07-39: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-39
+2024-12-31_23-07-40: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-40
+2024-12-31_23-07-41: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-41
+2024-12-31_23-07-42: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-42
+2024-12-31_23-07-43: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-43
+2024-12-31_23-07-44: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-44
+2024-12-31_23-07-45: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-45
+2024-12-31_23-07-46: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-46
+2024-12-31_23-07-47: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-47
+2024-12-31_23-07-48: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-48
+2024-12-31_23-07-49: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-49
+2024-12-31_23-07-50: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-50
+2024-12-31_23-07-51: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-51
+2024-12-31_23-07-52: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-52
+2024-12-31_23-07-53: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-53
+2024-12-31_23-07-55: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-55
+2024-12-31_23-07-56: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-56
+2024-12-31_23-07-57: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-57
+2024-12-31_23-07-58: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-58
+2024-12-31_23-07-59: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-07-59
+2024-12-31_23-08-00: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-08-00
+2024-12-31_23-08-01: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-08-01
+Stopping
+Stopping
