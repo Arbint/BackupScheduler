@@ -18,12 +18,14 @@ from PySide6.QtGui import QIntValidator
 from Scheduler import BackupScheduler 
 from DurationView import DurationView
 from Logger import Logger
+from P4Backup import P4Backup
 
 class ScheduleGUI(QWidget):
     def __init__(self):
         super().__init__()
 
         self.scheduler = BackupScheduler()
+        self.scheduler.ConfigureBackupImpl(P4Backup())
         self.scheduler.SetLogCallback(self.AddLog)
 
         self.setWindowTitle("Backup Scheduler")
@@ -133,6 +135,7 @@ if __name__ == "__main__":
         gui = ScheduleGUI()
         gui.show()
         app.exec()
+        gui.scheduler.StopBackupRoutine()
 
     except Exception as e:
         Logger.AddErrorLog(e)

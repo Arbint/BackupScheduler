@@ -8,6 +8,7 @@ import schedule
 from Duration import DurationModel
 from Logger import Logger
 from pathUtility import GetRecordFilePath
+from Backup import DefaultSystemBackupImpl, Backup
 import pickle
 
 
@@ -15,6 +16,7 @@ class BackupScheduler:
     def __init__(self):
         self.folderToBackup = ""
         self.backupDestination = ""
+        self.backupImpl = DefaultSystemBackupImpl()
         self.shouldUpdateScheudler = False
         self.logCallbackFunc = None
         self.duration = DurationModel()
@@ -33,6 +35,9 @@ class BackupScheduler:
                 schedule.run_pending()
 
             time.sleep(1)
+
+    def ConfigureBackupImpl(self, backupImpl: Backup):
+        self.backupImpl = backupImpl
 
     def SetFolderToBackup(self, newFolderToBackup: str):
         self.folderToBackup = newFolderToBackup
@@ -75,7 +80,7 @@ class BackupScheduler:
         backupFolderName = f"{origFolderName}_{backupTimeStr}"
 
         backupDestinationPath = os.path.join(self.backupDestination, backupFolderName)
-        shutil.copytree(self.folderToBackup, backupDestinationPath)
+        self.backupImpl.DoBackup(self.folderToBackup, backupDestinationPath)
 
         self.WriteBackupRecord(backupTime, backupDestinationPath)
 

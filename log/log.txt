@@ -81,3 +81,37 @@ starting backup /Users/jingtianli/dev/backupTest to /Users/jingtianli/dev/backup
 2024-12-31_23-08-01: /Users/jingtianli/dev/backupTest backed up to /Users/jingtianli/dev/backupDestination/backupTest_2024-12-31_23-08-01
 Stopping
 Stopping
+starting backup E:/Dev/backupTest/folderToBackup to E:/Dev/backupTest/backupDestination, with interval: 0 days, 0 hours, 0 minutes and 2 seconds
+2025-01-06_22-03-14: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-14
+2025-01-06_22-03-16: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-16
+2025-01-06_22-03-18: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-18
+2025-01-06_22-03-20: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-20
+2025-01-06_22-03-22: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-22
+2025-01-06_22-03-24: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-24
+2025-01-06_22-03-26: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-26
+2025-01-06_22-03-28: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-28
+2025-01-06_22-03-30: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-30
+2025-01-06_22-03-32: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-32
+2025-01-06_22-03-34: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-34
+2025-01-06_22-03-36: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-36
+2025-01-06_22-03-38: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-03-38
+Stopping
+starting backup E:/Dev/backupTest/folderToBackup to E:/Dev/backupTest/backupDestination, with interval: 0 days, 0 hours, 0 minutes and 2 seconds
+2025-01-06_22-06-17: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-17
+2025-01-06_22-06-19: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-19
+2025-01-06_22-06-21: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-21
+2025-01-06_22-06-23: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-23
+2025-01-06_22-06-25: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-25
+2025-01-06_22-06-27: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-27
+2025-01-06_22-06-29: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-29
+2025-01-06_22-06-31: E:/Dev/backupTest/folderToBackup backed up to E:/Dev/backupTest/backupDestination\folderToBackup_2025-01-06_22-06-31
+starting backup F:/p4d to F:/p4BackupByScheduler, with interval: 0 days, 0 hours, 0 minutes and 2 seconds
+2025-01-08_12-19-10: F:/p4d backed up to F:/p4BackupByScheduler\p4d_2025-01-08_12-19-10
+backup interval 0 is invalid
+starting backup F:/p4d to F:/p4BackupByScheduler, with interval: 0 days, 0 hours, 0 minutes and 2 seconds
+2025-01-08_12-22-55: F:/p4d backed up to F:/p4BackupByScheduler\p4d_2025-01-08_12-22-55
+2025-01-08_12-22-57: F:/p4d backed up to F:/p4BackupByScheduler\p4d_2025-01-08_12-22-57
+2025-01-08_12-22-59: F:/p4d backed up to F:/p4BackupByScheduler\p4d_2025-01-08_12-22-59
+Stopping
+Stopping
+starting backup F:/p4d to F:/p4BackupByScheduler, with interval: 0 days, 0 hours, 0 minutes and 2 seconds
