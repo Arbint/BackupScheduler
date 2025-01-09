@@ -137,6 +137,7 @@ class P4Backup(Backup):
     def GetServeryStat(self):
         try: 
             result = subprocess.run(self.windowsQueryServiceCmd, capture_output=True, text=True)
+            print(f"---------------quried server stat: {result.stdout} \n -------------")
             if self.runningState in result.stdout:
                 return self.runningState
             
