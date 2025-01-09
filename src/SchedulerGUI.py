@@ -66,9 +66,13 @@ class ScheduleGUI(QWidget):
         self.startBackupRoutineBtn.clicked.connect(self.scheduler.StartBackupRoutine)
         self.ctrlBtnLayout.addWidget(self.startBackupRoutineBtn)
 
-        self.stopRoutineBtn = QPushButton("Stop")
+        self.stopRoutineBtn = QPushButton("Stop Backup Routine")
         self.stopRoutineBtn.clicked.connect(self.scheduler.StopBackupRoutine)
         self.ctrlBtnLayout.addWidget(self.stopRoutineBtn)
+
+        self.doOneTimeBackupBtn = QPushButton("Onetime Backup Now")
+        self.doOneTimeBackupBtn.clicked.connect(self.scheduler.DoOneTimeBackup)
+        self.ctrlBtnLayout.addWidget(self.doOneTimeBackupBtn)
 
     def BackupMaxCountSliderUpdated(self):
         newCount = self.backupMaxCountSlider.value()

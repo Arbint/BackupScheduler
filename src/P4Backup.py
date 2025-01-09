@@ -18,21 +18,15 @@ class P4Backup(Backup):
             self.LockServer()
             os.makedirs(backupDestination, exist_ok = True)
 
-            #create the checkpoint and journal
-            checkpointFile, journalFile = self.CreateCheckpoint(p4ServerRoot)
-
             # backup checkpoint and journal
-            checkpointPath = os.path.join(backupDestination, "checkpoint.1")
-            if checkpointFile and os.path.exists(checkpointFile):
-                self.BackupComponent(checkpointFile, checkpointPath)
-            journalPath = os.path.join(backupDestination, "journal.1")
-            if journalFile and os.path.exists(journalFile):
-                self.BackupComponent(journalFile, journalPath)
+            checkpointSrcPath, journalSrcPath = self.CreateCheckpointAndRotateJournal(p4ServerRoot)  
 
-            #compress checkpoint
-            # if os.path.exist(checkpointPath):
-            #     shutil.make_archive(checkpointPath, "gzip", root_dir = backupDir, base_dir="checkpoint.1")
-            #     os.remove(checkpointPath)
+            if checkpointSrcPath and os.path.exists(checkpointSrcPath):
+                self.BackupComponent(checkpointSrcPath, backupDestination)
+                self.BackupComponent(checkpointSrcPath + ".md5", backupDestination)
+
+            if journalSrcPath and os.path.exists(journalSrcPath):
+                self.BackupComponent(journalSrcPath, backupDestination)
 
             #backup depot files
             self.BackupDepots(p4ServerRoot, backupDestination)  
@@ -48,14 +42,33 @@ class P4Backup(Backup):
             self.UnlockServer()
             print(f"can't backup server: {e}")
 
-    def CreateCheckpoint(self, p4ServerRoot):
+    def CreateCheckpointAndRotateJournal(self, p4ServerRoot):
         #ask p4d to create the journal and checkpoint file
         subprocess.run(['p4d', '-r', p4ServerRoot, '-jc'], check=True)
 
-        checkpointFile = os.path.join(p4ServerRoot, "checkpoint.1")
-        journalFile = os.path.join(p4ServerRoot, "journal.1")
+        checkpointFileName = self.GetFileWithNewestNumSubfix(p4ServerRoot, "checkpoint")
+        journalFileName  = self.GetFileWithNewestNumSubfix(p4ServerRoot, "journal")
 
-        return checkpointFile, journalFile
+        checkpointFilePath = os.path.join(p4ServerRoot, checkpointFileName)
+        journalFilePath = os.path.join(p4ServerRoot, journalFileName)
+
+        return checkpointFilePath, journalFilePath
+
+    def GetFileWithNewestNumSubfix(self, p4ServerRootDir, fileNameBase):
+        num = 0
+        newestFileName = ""
+        for fileName in os.listdir(p4ServerRootDir):
+            if fileNameBase in fileName:
+                fileNumStr = fileName.split('.')[-1]
+                if not fileNumStr.isdigit():
+                    continue
+
+                fileNum = int(fileNumStr)
+                if  fileNum > num:
+                    num = fileNum
+                    newestFileName = fileName
+
+        return newestFileName
      
     def BackupDepots(self, p4ServerRoot, backupDestination):
         try:
@@ -74,7 +87,7 @@ class P4Backup(Backup):
     def UnlockServer(self):
         subprocess.run(['p4', 'admin', "unlockserver"])
 
-    def BackupComponent(src, destDir):
+    def BackupComponent(self, src, destDir):
         try:
             if os.path.isdir(src):
                 shutil.copytree(src, destDir)

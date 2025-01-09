@@ -10,6 +10,7 @@ from Logger import Logger
 from pathUtility import GetRecordFilePath
 from Backup import DefaultSystemBackupImpl, Backup
 import pickle
+import stat
 
 
 class BackupScheduler:
@@ -35,6 +36,9 @@ class BackupScheduler:
                 schedule.run_pending()
 
             time.sleep(1)
+
+    def DoOneTimeBackup(self):
+        self.DoBackup()
 
     def ConfigureBackupImpl(self, backupImpl: Backup):
         self.backupImpl = backupImpl
@@ -111,8 +115,11 @@ class BackupScheduler:
                 earliestTime = folderCreationTime
                 earliest = folderName
 
-        shutil.rmtree(os.path.join(self.backupDestination, earliest))
+        shutil.rmtree(os.path.join(self.backupDestination, earliest), onerror=self.RemoveReadOnly)
 
+    def RemoveReadOnly(self, func, path, excInfo):
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
 
     def GetBackupTimeForFolder(self, folder):
         record = self.GetRecordDictionary()
