@@ -2,10 +2,20 @@ from Backup import Backup
 import subprocess
 import os
 import shutil
+import Logger
 
 class P4Backup(Backup):
     def __init__(self):
-        pass
+        self.p4ServiceName = "perforce"
+        self.windowsStartServiceCmd = ["sc", "start", self.p4ServiceName]
+        self.windowsStopServiceCmd = ["sc", "stop", self.p4ServiceName]
+        self.windowsQueryServiceCmd = ["sc", "query", self.p4ServiceName]
+        self.runningState = "RUNNING"
+        self.stoppedState = "STOPPED"
+        self.startPendingState = "START_PENDING"
+        self.stopPendingState = "STOP_PENDING"
+
+        
 
     def DoBackupImpl(self, p4ServerRoot: str, backupDestination: str):
         """
@@ -15,7 +25,7 @@ class P4Backup(Backup):
         """
 
         try:
-            self.LockServer()
+            self.StopServer()
             os.makedirs(backupDestination, exist_ok = True)
 
             # backup checkpoint and journal
@@ -37,9 +47,9 @@ class P4Backup(Backup):
             if os.path.exists(configFileSrcPath):
                 self.BackupComponent(configFileSrcPath, configFileDestPath)
             
-            self.UnlockServer()
+            self.RestartServer()
         except Exception as e:
-            self.UnlockServer()
+            self.RestartServer()
             print(f"can't backup server: {e}")
 
     def CreateCheckpointAndRotateJournal(self, p4ServerRoot):
@@ -80,12 +90,22 @@ class P4Backup(Backup):
                     self.BackupComponent(depotSrcPath, depotDestPath)
         except Exception as e:
             print(f"Can't backup depot {e}")
-    
-    def LockServer(self):
-        subprocess.run(['p4', 'admin', 'lockserver'])
 
-    def UnlockServer(self):
-        subprocess.run(['p4', 'admin', "unlockserver"])
+    def RestartServer(self):
+        print(f"####### Trying To Restart Server ############")
+        if self.IsServerPendingStart() or self.IsServerRunning():
+            print(f"Server Started or pending Start, not need to start again")
+            return
+        subprocess.run(self.windowsStartServiceCmd, check=True)   
+
+
+    def StopServer(self):
+        print(f"####### Trying To Stop Server ############")
+        if self.IsServerPendingStop() or self.IsServerStopped():
+            print(f"Server stopped or pending stop, no need to stop again")
+            return 
+        subprocess.run(self.windowsStopServiceCmd, check=True)
+
 
     def BackupComponent(self, src, destDir):
         try:
@@ -98,3 +118,34 @@ class P4Backup(Backup):
             print(f"error backing up {src}->{e}")
 
 
+    def BackupTerminated(self):
+        Logger.Logger.AddLogEntry(f"p4 backup process terminated, re institiating server")
+        self.RestartServer()
+
+    def IsServerRunning(self):
+        return self.GetServeryStat() == self.runningState
+
+    def IsServerPendingStart(self):
+        return self.GetServeryStat() == self.startPendingState
+
+    def IsServerStopped(self):
+        return self.GetServeryStat() == self.stoppedState
+
+    def IsServerPendingStop(self):
+        return self.GetServeryStat() == self.stopPendingState
+
+    def GetServeryStat(self):
+        try: 
+            result = subprocess.run(self.windowsQueryServiceCmd, capture_output=True, text=True)
+            if self.runningState in result.stdout:
+                return self.runningState
+            
+            if self.startPendingState in result.stdout:
+                return self.startPendingState
+
+            if self.stopPendingState in result.stdout:
+                return self.stopPendingState
+
+        except subprocess.CalledProcessError as e:
+            print(f"Error checking server status: {e}")
+            return None

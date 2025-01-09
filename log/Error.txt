@@ -1,1 +1,3 @@
 backup interval 0 is invalid
+Command '['sc', 'stop', 'perforce']' returned non-zero exit status 5.
+Command '['sc', 'stop', 'perforce']' returned non-zero exit status 5.

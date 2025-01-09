@@ -19,6 +19,8 @@ from Scheduler import BackupScheduler
 from DurationView import DurationView
 from Logger import Logger
 from P4Backup import P4Backup
+import ctypes
+import sys
 
 class ScheduleGUI(QWidget):
     def __init__(self):
@@ -131,16 +133,24 @@ class ScheduleGUI(QWidget):
     def AddLog(self, logEntry):
         self.logList.addItem(logEntry)
 
+def IsAdmin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except: 
+        return False
 
 if __name__ == "__main__":
-    try:
+    if not IsAdmin():
+        print("Requesting admin privileges...")
+        ctypes.windll.shell32.ShellExecuteW(
+            None, "runas", sys.executable, " ".join(sys.argv), None, 1
+        )
+        sys.exit(0)
+    else:
         app = QApplication()
-
         gui = ScheduleGUI()
         gui.show()
         app.exec()
-        gui.scheduler.StopBackupRoutine()
+        gui.scheduler.BackupAppTerminated()
 
-    except Exception as e:
-        Logger.AddErrorLog(e)
 

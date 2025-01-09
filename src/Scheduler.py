@@ -144,8 +144,11 @@ class BackupScheduler:
 
     def StopBackupRoutine(self):
         self.AddLog(f"Stopping", True)
+        self.backupImpl.Stop()
         self.shouldUpdateScheudler = False
 
+    def BackupAppTerminated(self):
+        self.backupImpl.BackupTerminated()
 
     def WriteBackupRecord(self, backupTime, folderName):
         record = self.GetRecordDictionary()

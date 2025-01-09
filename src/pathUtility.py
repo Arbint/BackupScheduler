@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import Logger
 import subprocess
 
 def GetSrcDir():
@@ -21,21 +20,23 @@ def GetRecordFilePath():
 
     return dataPath.resolve()
 
-def CreateSnapshotWindows(dirToSnapShot):
+def CreateSnapshotWindows(dirToSnapShot, snapshotDrive = "X:"):
+    """
+    this needs a windows server version, and cannot be used on regular windows os. 
+    """
     diskshadowScriptPath = os.path.join(GetSrcDir(), "diskshadowScript.txt")
     try:
-        snapshotDrive = "X:"
         diskShadowScript = f"""
         set context persistent
-        add volume {os.path.splitdirve(dirToSnapShot)[0]} alias "snapshotAlias"
+        add volume {os.path.splitdrive(dirToSnapShot)[0]} 
+        expose * {snapshotDrive}
         create
-        expose %snapshotAlias% {snapshotDrive}
         """
 
         with open(diskshadowScriptPath, "w") as scriptFile:
             scriptFile.write(diskShadowScript)
 
-        subprocess.run(["diskshadow", "/s", diskshadowScriptPath], check=True)
+        subprocess.run(["diskshadow", "-s", diskshadowScriptPath], check=True)
         os.remove(diskshadowScriptPath)
         return snapshotDrive + dirToSnapShot[len(os.path.splitdrive(dirToSnapShot)[0]):]
 
@@ -43,8 +44,13 @@ def CreateSnapshotWindows(dirToSnapShot):
         if os.path.exists(diskshadowScriptPath):
             os.remove(diskshadowScriptPath)
 
-        Logger.Logger.AddLogEntry(f"Failed to create windows snapshot {e}", True)
+        print(f"Failed to create windows snapshot {e}")
         return None
 
-
-print(CreateSnapshotWindows(GetPrjDir(), ))
+def DeleteWindowsSnapshot(snapShotDrive = "X:"):
+    diskshadowScriptPath = os.path.join(GetSrcDir(), "diskshadowScript.txt")
+    try:
+        with open(diskshadowScriptPath, "w") as scriptFile:
+            scriptFile.write(f"delete shadows exposed {snapShotDrive}")
+    except Exception as e:
+        print(f"Failed to remove snapshot")

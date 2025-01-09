@@ -19,6 +19,9 @@ class Backup:
     def DoBackupImpl(self, folderToBackup: str,  backupDestination: str):
         print(f"trying to backup with the abstract base backup class, please use a concrete one")
 
+    def BackupTerminated(self):
+        print(f"stoppoing backup")
+
 class DefaultSystemBackupImpl(Backup):
     def __init__(self):
         pass
