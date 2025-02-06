@@ -3,6 +3,7 @@ import subprocess
 import os
 import shutil
 import Logger
+import re
 
 class P4Backup(Backup):
     def __init__(self):
@@ -14,7 +15,6 @@ class P4Backup(Backup):
         self.stoppedState = "STOPPED"
         self.startPendingState = "START_PENDING"
         self.stopPendingState = "STOP_PENDING"
-
         
 
     def DoBackupImpl(self, p4ServerRoot: str, backupDestination: str):
@@ -150,3 +150,11 @@ class P4Backup(Backup):
         except subprocess.CalledProcessError as e:
             print(f"Error checking server status: {e}")
             return None
+        
+    def GetAllUserEmails(self):
+        users = subprocess.run("p4 users", capture_output=True, text=True)        
+        emails = re.findall(r'<([^>]+)>', users.stdout)
+        return emails
+
+
+P4Backup().GetAllUserEmails()
