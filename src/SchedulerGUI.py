@@ -19,6 +19,7 @@ from Scheduler import BackupScheduler
 from DurationView import DurationView
 from Logger import Logger
 from P4Backup import P4Backup
+from Backup import DefaultSystemBackupImpl
 import ctypes
 import sys
 
@@ -27,7 +28,7 @@ class ScheduleGUI(QWidget):
         super().__init__()
 
         self.scheduler = BackupScheduler()
-        self.scheduler.ConfigureBackupImpl(P4Backup())
+        self.scheduler.ConfigureBackupImpl(DefaultSystemBackupImpl())
         self.scheduler.SetLogCallback(self.AddLog)
 
         self.setWindowTitle("Backup Scheduler")
@@ -85,15 +86,24 @@ class ScheduleGUI(QWidget):
         self.backupMaxCountLabel.setText(f"Backup Max Count: {newCount}      ")
 
     def BuildTimeConfigSection(self, parent):
+
+        backupIntervalLabel = QLabel("Backup First Delay")
+        parent.addWidget(backupIntervalLabel)
+        delayView = DurationView()        
+        delayView.hoursChanged.connect(self.scheduler.backupDelayDuration.SetHours)
+        delayView.daysChanged.connect(self.scheduler.backupDelayDuration.SetDays)
+        delayView.minutesChanged.connect(self.scheduler.backupDelayDuration.SetMinutes)
+        delayView.secondChanged.connect(self.scheduler.backupDelayDuration.SetSeconds)
+
+        parent.addWidget(delayView)
+
         backupIntervalLabel = QLabel("Backup Interval")
         parent.addWidget(backupIntervalLabel)
-        
         durationView = DurationView()
-        durationView.firstDelayChanged.connect(self.scheduler.duration.SetFirstDelay)
-        durationView.hoursChanged.connect(self.scheduler.duration.SetHours)
-        durationView.daysChanged.connect(self.scheduler.duration.SetDays)
-        durationView.minutesChanged.connect(self.scheduler.duration.SetMinutes)
-        durationView.secondChanged.connect(self.scheduler.duration.SetSeconds)
+        durationView.hoursChanged.connect(self.scheduler.backupIntervalDuration.SetHours)
+        durationView.daysChanged.connect(self.scheduler.backupIntervalDuration.SetDays)
+        durationView.minutesChanged.connect(self.scheduler.backupIntervalDuration.SetMinutes)
+        durationView.secondChanged.connect(self.scheduler.backupIntervalDuration.SetSeconds)
 
         parent.addWidget(durationView)
 
@@ -135,6 +145,7 @@ class ScheduleGUI(QWidget):
         self.logList.addItem(logEntry)
 
 def IsAdmin():
+    return True
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except: 

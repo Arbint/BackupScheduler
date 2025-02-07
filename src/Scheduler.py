@@ -20,7 +20,8 @@ class BackupScheduler:
         self.backupImpl = DefaultSystemBackupImpl()
         self.shouldUpdateScheudler = False
         self.logCallbackFunc = None
-        self.duration = DurationModel()
+        self.backupIntervalDuration = DurationModel()
+        self.backupDelayDuration = DurationModel()
 
         self.schedulerThread = threading.Thread(target = self.UpdateBackupThread)
         self.schedulerThread.daemon = True
@@ -51,26 +52,26 @@ class BackupScheduler:
 
     def StartBackupRoutine(self):
         self.CheckInputValidity()
-        if self.duration.firstDelaySeconds == 0:
+        if self.backupDelayDuration.ToSecond() == 0:
             self.StartPeoridicalBackup()
         else:
-            self.AddLog(f"Starting With Delay: {self.duration.firstDelaySeconds} seconds")
+            self.AddLog(f"Starting With Delay: {self.backupDelayDuration.ToSecond()} seconds")
+            self.shouldUpdateScheudler=True
             schedule.clear()
-            schedule.every(self.duration.firstDelaySeconds).seconds.do(self.StartPeoridicalBackup)
+            schedule.every(self.backupDelayDuration.ToSecond()).seconds.do(self.StartPeoridicalBackup)
 
 
     def StartPeoridicalBackup(self):
-        schedule.clear()
-        self.DoBackup()
         self.CheckInputValidity()
-        self.AddLog(f"starting backup {self.folderToBackup} to {self.backupDestination}, with interval: {self.duration}", True)
+        self.AddLog(f"starting backup {self.folderToBackup} to {self.backupDestination}, with interval: {self.backupIntervalDuration}", True)
 
         self.shouldUpdateScheudler = True
-        schedule.every(self.duration.ToSecond()).seconds.do(self.DoBackup)
+        schedule.clear()
+        schedule.every(self.backupIntervalDuration.ToSecond()).seconds.do(self.DoBackup)
 
 
     def CheckInputValidity(self):
-        backupIntervalSeconds = self.duration.ToSecond()
+        backupIntervalSeconds = self.backupIntervalDuration.ToSecond()
         if backupIntervalSeconds <= 0:
             errorMsg = f"backup interval {backupIntervalSeconds} is invalid"
             self.AddLog(errorMsg, True)
