@@ -26,7 +26,6 @@ class BackupScheduler:
         self.schedulerThread.daemon = True
         self.schedulerThread.start()
         self.maxBackupCount = 2 
-        self.backupDelay = 0
 
     def SetMaxbackupCount(self, maxBackupCount):
         self.maxBackupCount = maxBackupCount
@@ -52,12 +51,12 @@ class BackupScheduler:
 
     def StartBackupRoutine(self):
         self.CheckInputValidity()
-        if self.backupDelay == 0:
+        if self.duration.firstDelaySeconds == 0:
             self.StartPeoridicalBackup()
         else:
-            self.AddLog(f"Starting With Delay: {self.backupDelay}")
+            self.AddLog(f"Starting With Delay: {self.duration.firstDelaySeconds} seconds")
             schedule.clear()
-            schedule.every(self.backupDelay).hours.do(self.StartPeoridicalBackup)
+            schedule.every(self.duration.firstDelaySeconds).seconds.do(self.StartPeoridicalBackup)
 
 
     def StartPeoridicalBackup(self):

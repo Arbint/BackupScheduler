@@ -89,6 +89,7 @@ class ScheduleGUI(QWidget):
         parent.addWidget(backupIntervalLabel)
         
         durationView = DurationView()
+        durationView.firstDelayChanged.connect(self.scheduler.duration.SetFirstDelay)
         durationView.hoursChanged.connect(self.scheduler.duration.SetHours)
         durationView.daysChanged.connect(self.scheduler.duration.SetDays)
         durationView.minutesChanged.connect(self.scheduler.duration.SetMinutes)

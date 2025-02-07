@@ -4,6 +4,7 @@ class DurationModel:
         self.hours = hours
         self.minutes = minutes
         self.seconds = seconds
+        self.firstDelaySeconds = 0
     
     def SetHours(self, hours):
         self.hours = hours
@@ -18,6 +19,9 @@ class DurationModel:
         self.seconds = seconds
     def __str__(self):
         return f"{self.days} days, {self.hours} hours, {self.minutes} minutes and {self.seconds} seconds"
+
+    def SetFirstDelay(self, firstDelaySeconds):
+        self.firstDelaySeconds = firstDelaySeconds
         
     def ToSecond(self):
         return self.days * 24 * 3600  + self.hours * 3600 + self.minutes * 60 + self.seconds

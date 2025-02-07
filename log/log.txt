@@ -204,3 +204,6 @@ p4 backup process terminated, re institiating server
 2025-01-09_01-11-18: D:/p4root backed up to D:/p4BackupTest\p4root_2025-01-09_01-11-18
 2025-01-09_01-13-05: D:/p4root backed up to D:/p4BackupTest\p4root_2025-01-09_01-13-05
 2025-01-09_01-13-30: D:/p4root backed up to D:/p4BackupTest\p4root_2025-01-09_01-13-30
+p4 backup process terminated, re institiating server
+Starting With Delay: 3 seconds
+Stopping

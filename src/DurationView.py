@@ -3,6 +3,7 @@ from PySide6.QtGui import QIntValidator
 from PySide6.QtCore import Signal
 
 class DurationView(QWidget):
+    firstDelayChanged = Signal(int)
     daysChanged = Signal(int)
     hoursChanged = Signal(int)
     minutesChanged = Signal(int)
@@ -10,13 +11,16 @@ class DurationView(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.masterLayout = QHBoxLayout()
+        self.masterLayout = QVBoxLayout()
         self.setLayout(self.masterLayout)
+        self.AddNumEntry(self.masterLayout, "First Delay", self.firstDelayChanged)
 
-        self.AddNumEntry(self.masterLayout, "Days", self.daysChanged)
-        self.AddNumEntry(self.masterLayout, "Hours", self.hoursChanged)
-        self.AddNumEntry(self.masterLayout, "Minutes", self.minutesChanged)
-        self.AddNumEntry(self.masterLayout, "second", self.secondChanged)
+        peoridialLayout = QHBoxLayout()
+        self.masterLayout.addLayout(peoridialLayout)
+        self.AddNumEntry(peoridialLayout, "Days", self.daysChanged)
+        self.AddNumEntry(peoridialLayout, "Hours", self.hoursChanged)
+        self.AddNumEntry(peoridialLayout, "Minutes", self.minutesChanged)
+        self.AddNumEntry(peoridialLayout, "second", self.secondChanged)
 
     def AddNumEntry(self, parent: QLayout, label: str, changeSignal):
         label = QLabel(label)
