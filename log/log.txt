@@ -207,3 +207,32 @@ p4 backup process terminated, re institiating server
 p4 backup process terminated, re institiating server
 Starting With Delay: 3 seconds
 Stopping
+Starting With Delay: 3 seconds
+Starting With Delay: 1 seconds
+Starting With Delay: 1 seconds
+Starting With Delay: 1 seconds
+Stopping
+Starting With Delay: 61 seconds
+Stopping
+Starting With Delay: 3661 seconds
+Stopping
+Starting With Delay: 90061 seconds
+Stopping
+2025-02-07_11-35-48: /Volumes/Data/TestBackup/src backed up to /Volumes/Data/TestBackup/dest/src_2025-02-07_11-35-48
+2025-02-07_11-35-52: /Volumes/Data/TestBackup/src backed up to /Volumes/Data/TestBackup/dest/src_2025-02-07_11-35-52
+2025-02-07_11-35-53: /Volumes/Data/TestBackup/src backed up to /Volumes/Data/TestBackup/dest/src_2025-02-07_11-35-53
+2025-02-07_11-35-54: /Volumes/Data/TestBackup/src backed up to /Volumes/Data/TestBackup/dest/src_2025-02-07_11-35-54
+Stopping
+Starting With Delay: 90061 seconds
+Stopping
+Starting With Delay: 1 seconds
+Stopping
+Stopping
+Stopping
+Stopping
+Stopping
+Stopping
+Stopping
+Stopping
+Stopping
+Stopping
