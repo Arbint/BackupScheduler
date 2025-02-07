@@ -61,6 +61,7 @@ class BackupScheduler:
 
     def StartPeoridicalBackup(self):
         schedule.clear()
+        self.DoBackup()
         self.CheckInputValidity()
         self.AddLog(f"starting backup {self.folderToBackup} to {self.backupDestination}, with interval: {self.duration}", True)
 
