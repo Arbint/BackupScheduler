@@ -4,6 +4,7 @@ import os
 import shutil
 import Logger
 import re
+from Communcation import Emailer
 
 class P4Backup(Backup):
     def __init__(self):
@@ -15,6 +16,8 @@ class P4Backup(Backup):
         self.stoppedState = "STOPPED"
         self.startPendingState = "START_PENDING"
         self.stopPendingState = "STOP_PENDING"
+        self.emailer = Emailer()
+        self.shouldInfomUsers = False
         
 
     def DoBackupImpl(self, p4ServerRoot: str, backupDestination: str):
@@ -97,6 +100,7 @@ class P4Backup(Backup):
             print(f"Server Started or pending Start, not need to start again")
             return
         subprocess.run(self.windowsStartServiceCmd, check=True)   
+        self.SendEmailToAllUsers("Perforce Server Is Back Online", self.GetServerBackOnlineModeMsg())
 
 
     def StopServer(self):
@@ -105,6 +109,7 @@ class P4Backup(Backup):
             print(f"Server stopped or pending stop, no need to stop again")
             return 
         subprocess.run(self.windowsStopServiceCmd, check=True)
+        self.SendEmailToAllUsers("Perforce Server In Backup Mode", self.GetServerBackOnlineModeMsg())
 
 
     def BackupComponent(self, src, destDir):
@@ -156,5 +161,16 @@ class P4Backup(Backup):
         emails = re.findall(r'<([^>]+)>', users.stdout)
         return emails
 
+    def SendEmailToAllUsers(self, subject, msg):
+        if not self.shouldInfomUsers:
+            return
 
-P4Backup().GetAllUserEmails()
+        self.emailer.SendGroupEmail(self.GetAllUserEmails(), subject, msg)
+
+
+    def GetServerInBackupModeMsg(self):
+        return """This an automated email, the perforce server is down and in backup mode, you will get an message when it's back online.
+        """
+
+    def GetServerBackOnlineModeMsg(self):
+        return """This an aotomated email, the perfore server is backup online."""
