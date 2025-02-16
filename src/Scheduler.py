@@ -66,6 +66,7 @@ class BackupScheduler:
         self.AddLog(f"starting backup {self.folderToBackup} to {self.backupDestination}, with interval: {self.backupIntervalDuration}", True)
 
         self.shouldUpdateScheudler = True
+        self.DoBackup()
         schedule.clear()
         schedule.every(self.backupIntervalDuration.ToSecond()).seconds.do(self.DoBackup)
 

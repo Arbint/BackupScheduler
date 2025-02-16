@@ -28,7 +28,7 @@ class ScheduleGUI(QWidget):
         super().__init__()
 
         self.scheduler = BackupScheduler()
-        self.scheduler.ConfigureBackupImpl(DefaultSystemBackupImpl())
+        self.scheduler.ConfigureBackupImpl(P4Backup())
         self.scheduler.SetLogCallback(self.AddLog)
 
         self.setWindowTitle("Backup Scheduler")
@@ -145,7 +145,6 @@ class ScheduleGUI(QWidget):
         self.logList.addItem(logEntry)
 
 def IsAdmin():
-    return True
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except: 

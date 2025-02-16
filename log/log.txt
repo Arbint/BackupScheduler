@@ -236,3 +236,10 @@ Stopping
 Stopping
 Stopping
 Stopping
+Starting With Delay: 3600 seconds
+starting backup D:/P4ServerRoot to D:/ServerBackupOneDrive/OneDrive - University of the Incarnate Word/P4SeverRootBackup, with interval: 7 days, 0 hours, 0 minutes and 0 seconds
+Stopping
+Starting With Delay: 32400 seconds
+starting backup D:/P4ServerRoot to D:/ServerBackupOneDrive/OneDrive - University of the Incarnate Word/P4SeverRootBackup, with interval: 7 days, 0 hours, 0 minutes and 0 seconds
+2025-02-08_00-18-53: D:/P4ServerRoot backed up to D:/ServerBackupOneDrive/OneDrive - University of the Incarnate Word/P4SeverRootBackup\P4ServerRoot_2025-02-08_00-18-53
+Starting With Delay: 309600 seconds
