@@ -203,5 +203,7 @@ class P4BackupLinux(P4Backup):
         super().__init__()
         print("Linux Backup Used")
 
+    def DoBackupImpl(self, p4ServerRoot: str, backupDestination: str):
+        print("Doing Backup")
 
-linuxBackupTest = P4BackupLinux()
+
