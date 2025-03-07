@@ -252,7 +252,7 @@ class P4BackupLinuxWithZFS():
 
 
     def CreateBackupSnapshotName(self):
-        return "perforce_pool:@backup_$(date +%Y-%m-%d)"
+        return f"{self.zfsPoolName}:@backup_$(date +%Y-%m-%d)"
 
 
     def CreateZFSSnapshot(self, zfsPoolName, backupDestination):
