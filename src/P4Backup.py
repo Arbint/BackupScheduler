@@ -12,12 +12,21 @@ class P4Backup(Backup):
         self.p4ServiceName = "perforce"
         self.emailer = Emailer()
         self.shouldInfomUsers = False
+        self.lockServerCmd = ['p4', "admin", "lock"]
+        self.unlockServerCmd = ['p4', "admin", "unlock"]
 
     def PreBackup(self):
         pass
 
     def PostBackup(self):
         pass
+
+    def LockServer(self):
+        subprocess.run(self.lockServerCmd, check=True)
+
+    def UnlockServerCmd(self):
+        subprocess.run(self.unlockServerCmd, check=True)
+
 
     def DoBackupImpl(self, p4ServerRoot: str, backupDestination: str):
         """
@@ -28,32 +37,38 @@ class P4Backup(Backup):
 
         try:
             self.PreBackup()
+
             os.makedirs(backupDestination, exist_ok = True)
 
-            # backup checkpoint and journal
-            checkpointSrcPath, journalSrcPath = self.CreateCheckpointAndRotateJournal(p4ServerRoot)  
-
-            if checkpointSrcPath and os.path.exists(checkpointSrcPath):
-                self.BackupComponent(checkpointSrcPath, backupDestination)
-                self.BackupComponent(checkpointSrcPath + ".md5", backupDestination)
-
-            if journalSrcPath and os.path.exists(journalSrcPath):
-                self.BackupComponent(journalSrcPath, backupDestination)
-
-            #backup depot files
+            self.BackupCheckPointAndJournal(p4ServerRoot, backupDestination)
             self.BackupDepots(p4ServerRoot, backupDestination)  
 
-            #backup server configuration files
-            configFileSrcPath = os.path.join(p4ServerRoot, "p4dctl.conf")
-            configFileDestPath =  os.path.join(backupDestination, "p4dctl.conf")
-            if os.path.exists(configFileSrcPath):
-                self.BackupComponent(configFileSrcPath, configFileDestPath)
+            #TODO: this probably do not work...
+            self.BackupServerConfigurationFiles(p4ServerRoot, backupDestination)
             
             self.PostBackup()
 
         except Exception as e:
             self.PostBackup()
             print(f"can't backup server: {e}")
+
+
+    def BackupServerConfigurationFiles(self, p4ServerRoot, backupDestination):
+        configFileSrcPath = os.path.join(p4ServerRoot, "p4dctl.conf")
+        configFileDestPath =  os.path.join(backupDestination, "p4dctl.conf")
+        if os.path.exists(configFileSrcPath):
+            self.BackupComponent(configFileSrcPath, configFileDestPath)
+
+
+    def BackupCheckPointAndJournal(self, p4ServerRoot, backupDestination):
+        checkpointSrcPath, journalSrcPath = self.CreateCheckpointAndRotateJournal(p4ServerRoot)  
+
+        if checkpointSrcPath and os.path.exists(checkpointSrcPath):
+            self.BackupComponent(checkpointSrcPath, backupDestination)
+            self.BackupComponent(checkpointSrcPath + ".md5", backupDestination)
+
+        if journalSrcPath and os.path.exists(journalSrcPath):
+            self.BackupComponent(journalSrcPath, backupDestination)
 
     def CreateCheckpointAndRotateJournal(self, p4ServerRoot):
         #ask p4d to create the journal and checkpoint file
@@ -203,7 +218,19 @@ class P4BackupLinux(P4Backup):
         super().__init__()
         print("Linux Backup Used")
 
-    def DoBackupImpl(self, p4ServerRoot: str, backupDestination: str):
-        print("Doing Backup")
+    def PreBackup(self): 
+        self.lockServer()
+
+    def PostBackup(self):
+        self.unlockServer()
 
 
+class P4BackupLinuxWithZFS():
+    def __init__(self):
+        super().__init__()
+        print("Linux backup used with ZFS")
+
+    def DoBackupImpl(self, folderToBackup: str,  backupDestination: str):
+        self.BackupCheckPointAndJournal(folderToBackup, backupDestination)
+
+        
