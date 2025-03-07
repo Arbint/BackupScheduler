@@ -229,8 +229,38 @@ class P4BackupLinuxWithZFS():
     def __init__(self):
         super().__init__()
         print("Linux backup used with ZFS")
+        self.ZFSBackupCmd = ["zfs", "snapshot"] 
+        self.ZFSGenerateBackupFileCmd = ["sudo", "zfs", "send"]
+        self.zfsPoolName = "perforce_pool"
+
+
+    def GenerateZFSBackupCmd(self, snapshotName):
+        return self.ZFSBackupCmd + [snapshotName]
+        
+
+    def GenerateZFSSnapshotToFileCmd(self, snapshotName, backupDestination):
+        return self.ZFSGenerateBackupFileCmd + [snapshotName, ">", backupDestination+"/snapshot_backup.zfs"]
+
 
     def DoBackupImpl(self, folderToBackup: str,  backupDestination: str):
-        self.BackupCheckPointAndJournal(folderToBackup, backupDestination)
+        try:
+            self.BackupCheckPointAndJournal(folderToBackup, backupDestination)
+            self.CreateZFSSnapshot(self.zfsPoolName, backupDestination)
 
+        except subprocess.CalledProcessError as e:
+            print(f"Backup failed: {e}")
+
+
+    def CreateBackupSnapshotName(self):
+        return "perforce_pool:@backup_$(date +%Y-%m-%d)"
+
+
+    def CreateZFSSnapshot(self, zfsPoolName, backupDestination):
+        backupSnapshotName = self.CreateBackupSnapshotName()
+        subprocess.run(self.GenerateZFSBackupCmd(backupSnapshotName), check=True)
+        subprocess.run(self.GenerateZFSSnapshotToFileCmd(backupSnapshotName, backupDestination), check=True)
+
+
+
+        
         
