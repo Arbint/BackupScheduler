@@ -22,14 +22,14 @@ def ConvertSubprocessResultToDataSet(result):
         outDict[header] = []
 
     for entryLine in resultLines[1:]:
-        entryValues = RemoveEmptyEntry(entryLine)
+        entryValues = RemoveEmptyEntry(entryLine.split(" "))
+        
         for i in range(0, len(entryValues)):
+            entryKey = headers[i]
+            entryValue = entryValues[i]
+            outDict[entryKey] = entryValue
 
-
-
-
-    return headers
-
+    return outDict
 
 def RemoveEmptyEntry(inList):
     outList = []
