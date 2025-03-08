@@ -31,8 +31,6 @@ class Backup:
 
         return newDir
 
-
-
 class DefaultSystemBackupImpl(Backup):
     def __init__(self):
         pass

@@ -3,6 +3,7 @@ import subprocess
 import os
 import shutil
 import Logger
+from SSHUtils import SSHAgent
 from ZFSUtils import GetZFSPoolAbsPath, CreateZFSSnapshot
 
 import re
@@ -232,6 +233,9 @@ class P4BackupLinuxWithZFS(P4Backup):
     def __init__(self):
         super().__init__()
         print("Linux backup used with ZFS")
+        self.sshAgent = SSHAgent()
+        self.sshAgent.ConnectToHost()              
+        self.remoteBackupTopDir = "D:/P4ServerBackups"
 
 
     def DoBackupImpl(self, zfsPoolName: str,  backupDestination: str):
@@ -242,12 +246,13 @@ class P4BackupLinuxWithZFS(P4Backup):
             print(f"backing up server pool at location: {poolLocation}")
             self.BackupCheckPointAndJournal(poolLocation, backupSubDir)
             CreateZFSSnapshot(zfsPoolName, backupSubDir)
+            self.sshAgent.SendFile(backupSubDir, self.remoteBackupTopDir)
 
         except subprocess.CalledProcessError as e:
             print(f"Backup failed: {e}")
 
-        
+    
 
-
-Backuper = P4BackupLinuxWithZFS()
-Backuper.DoBackupImpl("perforce_pool", "/home/perforce/backup/")
+if __name__ == "__main__":
+    Backuper = P4BackupLinuxWithZFS()
+    Backuper.DoBackupImpl("perforce_pool", "/home/perforce/backup/")
