@@ -1,14 +1,5 @@
 import subprocess
 
-def GetZFSPoolAbsPath(zfsPoolName):
-    processResult = subprocess.run(["zfs", "get", "mountpoint", zfsPoolName], capture_output=True, text=True, check=True)
-    
-    resultList = processResult.stdout.split("\n")
-    if len(resultList) > 1:
-        return resultList[1:]
-
-    return None
-
 
 def ConvertSubprocessResultToDataSet(result):
     resultLines = result.stdout.strip().split("\n")
@@ -41,7 +32,16 @@ def RemoveEmptyEntry(inList):
 
     return outList
 
-poolPath = GetZFSPoolAbsPath("perforce_pool")
 
-processResult = subprocess.run(["zfs", "get", "mountpoint", "perforce_pool"], capture_output=True, text=True, check=True)
-print(ConvertSubprocessResultToDataSet(processResult))
+def GetZFSPoolAbsPath(zfsPoolName):
+    processResult = subprocess.run(["zfs", "get", "mountpoint", zfsPoolName], capture_output=True, text=True, check=True)
+    resultDict = ConvertSubprocessResultToDataSet(processResult)
+    return resultDict["VALUE"]
+
+
+def CreateZFSSnapshot(zfsPoolName, backupDestination):
+    backupSnapshotName = f"{zfsPoolName}:@backup_$(date +%Y-%m-%d)"
+
+    subprocess.run(["zfs", "snapshot", zfsPoolName], check = True)
+    subprocess.run(["sudo", "zfs", "send", backupSnapshotName, ">", f"{backupDestination}/snapshot_backup.zfs"])
+

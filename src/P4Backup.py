@@ -3,12 +3,15 @@ import subprocess
 import os
 import shutil
 import Logger
+from ZFSUtils import GetZFSPoolAbsPath, CreateZFSSnapshot
+
 import re
 from Communcation import Emailer
 
 
 class P4Backup(Backup):
     def __init__(self):
+        super().__init__()
         self.p4ServiceName = "perforce"
         self.emailer = Emailer()
         self.shouldInfomUsers = False
@@ -225,41 +228,24 @@ class P4BackupLinux(P4Backup):
         self.unlockServer()
 
 
-class P4BackupLinuxWithZFS():
+class P4BackupLinuxWithZFS(P4Backup):
     def __init__(self):
         super().__init__()
         print("Linux backup used with ZFS")
-        self.ZFSBackupCmd = ["zfs", "snapshot"] 
-        self.ZFSGenerateBackupFileCmd = ["sudo", "zfs", "send"]
-        self.zfsPoolName = "perforce_pool"
 
 
-    def GenerateZFSBackupCmd(self, snapshotName):
-        return self.ZFSBackupCmd + [snapshotName]
-        
-
-    def GenerateZFSSnapshotToFileCmd(self, snapshotName, backupDestination):
-        return self.ZFSGenerateBackupFileCmd + [snapshotName, ">", backupDestination+"/snapshot_backup.zfs"]
-
-
-    def DoBackupImpl(self, folderToBackup: str,  backupDestination: str):
+    def DoBackupImpl(self, zfsPoolName: str,  backupDestination: str):
         try:
-            self.BackupCheckPointAndJournal(folderToBackup, backupDestination)
-            self.CreateZFSSnapshot(self.zfsPoolName, backupDestination)
+            poolLocation = GetZFSPoolAbsPath(zfsPoolName)
+            print(f"backing up server pool at location: {poolLocation}")
+            self.BackupCheckPointAndJournal(poolLocation, backupDestination)
+            #CreateZFSSnapshot(zfsPoolName, backupDestination)
 
         except subprocess.CalledProcessError as e:
             print(f"Backup failed: {e}")
 
-
-    def CreateBackupSnapshotName(self):
-        return f"{self.zfsPoolName}:@backup_$(date +%Y-%m-%d)"
-
-
-    def CreateZFSSnapshot(self, zfsPoolName, backupDestination):
-        backupSnapshotName = self.CreateBackupSnapshotName()
-        subprocess.run(self.GenerateZFSBackupCmd(backupSnapshotName), check=True)
-        subprocess.run(self.GenerateZFSSnapshotToFileCmd(backupSnapshotName, backupDestination), check=True)
-
-
         
-        
+
+
+Backuper = P4BackupLinuxWithZFS()
+Backuper.DoBackupImpl("perforce_pool", "~/backup/")
