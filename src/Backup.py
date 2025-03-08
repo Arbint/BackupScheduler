@@ -1,5 +1,6 @@
 import shutil
 import os
+from datetime import datetime
 
 class Backup:
     def __init__(self):
@@ -21,6 +22,16 @@ class Backup:
 
     def BackupTerminated(self):
         print(f"stoppoing backup")
+
+    def CreateBackupSubDir(self, backupTopDir):
+        folderName = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        newDir = os.path.join(backupTopDir, folderName)
+        if not os.path.exists(newDir):
+            os.makedirs(newDir, exist_ok=True)
+
+        return newDir
+
+
 
 class DefaultSystemBackupImpl(Backup):
     def __init__(self):

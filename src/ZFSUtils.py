@@ -1,5 +1,5 @@
 import subprocess
-
+from datetime import datetime
 
 def ConvertSubprocessResultToDataSet(result):
     resultLines = result.stdout.strip().split("\n")
@@ -40,8 +40,15 @@ def GetZFSPoolAbsPath(zfsPoolName):
 
 
 def CreateZFSSnapshot(zfsPoolName, backupDestination):
-    backupSnapshotName = f"{zfsPoolName}:@backup_$(date +%Y-%m-%d)"
 
-    subprocess.run(["zfs", "snapshot", zfsPoolName], check = True)
-    subprocess.run(["sudo", "zfs", "send", backupSnapshotName, ">", f"{backupDestination}/snapshot_backup.zfs"])
+    timeSubfix = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    backupSnapshotName = f"{zfsPoolName}@backup_{timeSubfix}"
+
+    createSnapshotCmd = ["zfs", "snapshot", backupSnapshotName] 
+    print(f"creating snapshot with cmd: {createSnapshotCmd}")
+    subprocess.run(createSnapshotCmd, check=True)
+
+    sendCmd = f"zfs send {backupSnapshotName} > {backupDestination}/snapshot_backup.zfs"
+    print(f"send snapshot with cmd: {sendCmd}")
+    subprocess.run(sendCmd, shell=True, check=True)
 

@@ -237,9 +237,11 @@ class P4BackupLinuxWithZFS(P4Backup):
     def DoBackupImpl(self, zfsPoolName: str,  backupDestination: str):
         try:
             poolLocation = GetZFSPoolAbsPath(zfsPoolName)
+            backupSubDir = self.CreateBackupSubDir(backupDestination)
+
             print(f"backing up server pool at location: {poolLocation}")
-            self.BackupCheckPointAndJournal(poolLocation, backupDestination)
-            #CreateZFSSnapshot(zfsPoolName, backupDestination)
+            self.BackupCheckPointAndJournal(poolLocation, backupSubDir)
+            CreateZFSSnapshot(zfsPoolName, backupSubDir)
 
         except subprocess.CalledProcessError as e:
             print(f"Backup failed: {e}")
@@ -248,4 +250,4 @@ class P4BackupLinuxWithZFS(P4Backup):
 
 
 Backuper = P4BackupLinuxWithZFS()
-Backuper.DoBackupImpl("perforce_pool", "~/backup/")
+Backuper.DoBackupImpl("perforce_pool", "/home/perforce/backup/")
